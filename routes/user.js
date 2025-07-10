@@ -3,7 +3,7 @@ const {handleUserSignup,handleUserLogin} = require("../controllers/user.js")
 
 const router = express.Router()
 
-router.post("/",handleUserSignup)
+router.post("/signup",handleUserSignup)
 
 router.post("/login",handleUserLogin)
 

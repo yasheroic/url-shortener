@@ -3,7 +3,7 @@ const { connectToMongoDB } = require("./connect.js");
 const path = require('path')
 const URL = require("./models/url.js");
 const cookieParser = require("cookie-parser")
-const {restrictToLoggedinUserOnly} = require("./middlewares/auth.js")
+const {restrictToLoggedinUserOnly,checkAuth} = require("./middlewares/auth.js")
 const urlRoute = require("./routes/url.js");
 const staticRoute = require("./routes/staticRouter.js")
 const userRoute = require("./routes/user.js")
@@ -21,7 +21,7 @@ app.set("view engine","ejs")
 app.set("views", path.resolve("./views"))
 
 app.use("/url",restrictToLoggedinUserOnly, urlRoute);
-app.use("/", staticRoute)
+app.use("/",checkAuth, staticRoute)
 app.use("/user", userRoute)
 
 app.get("/test", async (req, res) => {
