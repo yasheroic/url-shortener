@@ -14,6 +14,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}))
 app.use(cookieParser())
 
+// Add middleware to handle Authorization header properly
+app.use((req, res, next) => {
+    // Log headers for debugging
+    console.log('Headers:', req.headers);
+    next();
+});
+
 connectToMongoDB("mongodb://127.0.0.1:27017/short-url").then(() => {
   console.log("MongoDB Connected");
 });

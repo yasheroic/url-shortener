@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get("/", async(req,res)=>{
     if(!req.user){
-        res.redirect("/login")
+        return res.redirect("/login")
     }
     const allUrl = await URL.find({createdBy:req.user._id})
     return res.render("home",{
