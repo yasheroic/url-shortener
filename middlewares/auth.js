@@ -1,12 +1,12 @@
 const {getUser} = require("../services/auth.js")
 
 function checkForAuthentication(req,res,next){
-    const authorizationHeaderValue = req.headers.authorization
+    const tokenCookie = req.cookies?.token
     req.user = null
-    if(!authorizationHeaderValue || !authorizationHeaderValue.startsWith("Bearer")) {
+    if(!tokenCookie) {
         return next()
     }
-    const token = authorizationHeaderValue.split("Bearer ")[1]
+    const token = tokenCookie
     const user = getUser(token)
     req.user = user
     next()
@@ -17,8 +17,8 @@ function restrictTo(roles = []){
         if(!req.user){
             return res.redirect("/login")
         }
-        if(!roles.includes(req.user.roles)){
-            res.end("Unauthorised")
+        if(!roles.includes(req.user.role)){
+            return res.end("Unauthorised")
         }
         return next()
     }

@@ -3,7 +3,7 @@ const { connectToMongoDB } = require("./connect.js");
 const path = require('path')
 const URL = require("./models/url.js");
 const cookieParser = require("cookie-parser")
-const {restrictToLoggedinUserOnly,checkAuth} = require("./middlewares/auth.js")
+const {checkForAuthentication, restrictTo} = require("./middlewares/auth.js")
 const urlRoute = require("./routes/url.js");
 const staticRoute = require("./routes/staticRouter.js")
 const userRoute = require("./routes/user.js")
@@ -13,6 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended:false}))
 app.use(cookieParser())
+app.use(checkForAuthentication)
 
 // Add middleware to handle Authorization header properly
 app.use((req, res, next) => {
@@ -27,8 +28,8 @@ connectToMongoDB("mongodb://127.0.0.1:27017/short-url").then(() => {
 app.set("view engine","ejs")
 app.set("views", path.resolve("./views"))
 
-app.use("/url",restrictToLoggedinUserOnly, urlRoute);
-app.use("/",checkAuth, staticRoute)
+app.use("/url", restrictTo(["NORMAL"]), urlRoute);
+app.use("/", staticRoute)
 app.use("/user", userRoute)
 
 app.get("/test", async (req, res) => {
